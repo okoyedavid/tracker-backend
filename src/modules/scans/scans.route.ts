@@ -1,0 +1,10 @@
+import { Router } from "express";
+import { protect,sameOrigin,requirePermission,requireAnyPermission } from "../../middleware/security.module";
+import { scansController,receiptUpload } from "./scans.module";
+export const scansRouter=Router();
+scansRouter.use(sameOrigin,protect);
+scansRouter.post("/",requirePermission("expenses:create"),requirePermission("receipts:scan"),receiptUpload,scansController.save);
+scansRouter.get('/pending',requirePermission('expenses:approve'),scansController.pending);
+scansRouter.patch('/:id/override',requirePermission('expenses:approve'),scansController.override);
+scansRouter.get("/",requireAnyPermission(["expenses:view","expenses:view_own"]),scansController.list);
+scansRouter.get("/:id",requireAnyPermission(["expenses:view","expenses:view_own"]),scansController.get);

@@ -1,0 +1,10 @@
+import { database } from '../../config/database.module';
+import { ApiError } from '../../utils/api-error';
+import { asyncHandler } from '../../utils/async-handler';
+import { createReportsRepository } from './reports.repository';
+import { createReportsService } from './reports.service';
+import { createReportsController } from './reports.controller';
+import { reportSchemas } from './reports.schema';
+export const reportsRepository=createReportsRepository({database});
+const service=createReportsService({repository:reportsRepository,createApiError:(status,message)=>new ApiError(status,message)});
+export const reportsController=createReportsController({service,schemas:reportSchemas,asyncHandler});
